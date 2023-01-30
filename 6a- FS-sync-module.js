@@ -1,13 +1,13 @@
 const { readFileSync, writeFileSync } = require('fs');
 
-// $ this is synchronous way to deal with the files
+// $ this is synchronous/blocking way to deal with the files
 
 const path = require('path');
 const os = require('os');
 
 // *if you don't give the 2nd arg, the log will show buffered value and not the expected string.
-const first = readFileSync('contents/first.txt', 'utf8');
-const second = readFileSync('contents/second.txt', 'utf-8');
+const first = readFileSync('./contents/first.txt', 'utf8');
+const second = readFileSync('./contents/second.txt', 'utf-8');
 
 console.log({
   first,
@@ -29,7 +29,9 @@ setInterval(() => {
   const totalMemory = os.totalmem();
   const freePercentage = (freeMemory / totalMemory) * 100;
   const currentTime = new Date().toLocaleString();
-  writeFileSync('contents/subFolder/freeMemoryRecord.txt', `Free memory at ${currentTime} is: ${freePercentage.toFixed(2)}%\n`, {
-    flag: 'a',
-  });
+  writeFileSync(
+    './contents/subFolder/freeMemoryRecord.txt',
+    `Free memory at ${currentTime} is: ${freePercentage.toFixed(2)}%\n`,
+    { flag: 'a' }
+  );
 }, 2000);
