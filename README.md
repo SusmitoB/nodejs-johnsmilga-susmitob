@@ -1,3 +1,3 @@
-### commit message pattern "<DayDD-MMDDYYYY-CommitMsg>"
+### commit message pattern "DayDD-MMDDYYYY-CommitMsg"
 
 # nodejs-johnsmilga-susmitob
