@@ -1,4 +1,7 @@
 const { readFileSync, writeFileSync } = require('fs');
+
+// $ this is synchronous way to deal with the files
+
 const path = require('path');
 const os = require('os');
 
