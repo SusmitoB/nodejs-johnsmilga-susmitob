@@ -1,9 +1,18 @@
 const { readFile } = require('fs');
-const util = require('util');
 
-const readFilePromise = util.promisify(readFile);
+const getText = function (path) {
+  return new Promise((res, rej) => {
+    readFile(path, 'utf8', (err, result) => {
+      if (err) {
+        rej(err);
+        return;
+      }
+      res(result);
+    });
+  });
+};
 
-// readFilePromise('./contents/first.txt')
+// getText('./contents/first.txt')
 //   .then((data) => console.log(data))
 //   .catch((err) => console.log(err));
 
@@ -14,28 +23,20 @@ $ Promise.allSettled - we will get the value for all the promise passed in the e
 */
 
 // $ Promise.all
-Promise.all([
-  readFilePromise('./contents/first.txt', 'utf8'),
-  readFilePromise('./contents/second.txt', 'utf8'),
-  readFilePromise('./contents/wrongFile.txt', 'utf8'),
-])
+Promise.all([getText('./contents/first.txt'), getText('./contents/second.txt'), getText('./contents/wrongFile.txt')])
   .then((data) => console.log(data))
   .catch((err) => console.log(err));
 
 // $ Promise.allSettled
-Promise.allSettled([
-  readFilePromise('./contents/first.txt', 'utf8'),
-  readFilePromise('./contents/second.txt', 'utf8'),
-  readFilePromise('./contents/wrongFile.txt', 'utf8'),
-])
+Promise.allSettled([getText('./contents/first.txt'), getText('./contents/second.txt'), getText('./contents/wrongFile.txt')])
   .then((data) => console.log(data))
   .catch((err) => console.log(err));
 
 // $ async await approach
 const getTheValues = async () => {
   try {
-    const first = await readFilePromise('./contents/first.txt', 'utf8');
-    const second = await readFilePromise('./contents/second.txt', 'utf8');
+    const first = await getText('./contents/first.txt');
+    const second = await getText('./contents/second.txt');
     console.log({ first, second });
   } catch (error) {
     console.log(error);
