@@ -1,3 +1,5 @@
+const Task = require('../models/Task');
+
 const allTasks = () => {
   let data = [];
   const tasks = () => data;
@@ -8,27 +10,38 @@ const allTasks = () => {
 };
 const [tasks, setTasks] = allTasks();
 
-const getAllTasks = (req, res, next) => {
+const getAllTasks = async (req, res, next) => {
   // console.log({ tasks: tasks() });
-  res.status(200).json({
-    success: true,
-    tasks: tasks(),
-  });
+  try {
+    const tasks = await Task.find({});
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+  // res.status(200).json({
+  //   success: true,
+  //   tasks: tasks(),
+  // });
   if (next) next();
 };
 
-const createTask = (req, res, next) => {
-  const { name } = req?.body;
-  const date = new Date();
-  const uuid = `${String(
-    Math.floor(Math.random() * 100000000)
-  )}-${date.getDate()}${date.getDay()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`;
-  // console.log({ name, _id: uuid, completed: false });
-  setTasks([...tasks(), { name, _id: uuid, completed: false }]);
-  res.status(201).json({
-    success: true,
-    msg: 'Task is added successfully!',
-  });
+const createTask = async (req, res, next) => {
+  try {
+    const task = await Task.create(req?.body);
+    res.status(201).json(task);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+  // const { name } = req?.body;
+  // const date = new Date();
+  // const uuid = `${String(
+  //   Math.floor(Math.random() * 100000000)
+  // )}-${date.getDate()}${date.getDay()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`;
+  // setTasks([...tasks(), { name, _id: uuid, completed: false }]);
+  // res.status(201).json({
+  //   success: true,
+  //   msg: 'Task is added successfully!',
+  // });
   if (next) next();
 };
 
