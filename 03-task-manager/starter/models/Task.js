@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 // * Schema - What properties arwe mentioned in the schema only those will be considered
 const TaskSchema = new mongoose.Schema({
+  _id: mongoose.ObjectId,
   name: {
     type: String,
     required: [true, 'must provide a name'], // $ validator

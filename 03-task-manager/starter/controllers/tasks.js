@@ -45,19 +45,29 @@ const createTask = async (req, res, next) => {
   if (next) next();
 };
 
-const getTask = (req, res, next) => {
+const getTask = async (req, res, next) => {
   const { id } = req?.params;
-  const task = tasks().find((item) => item._id === id);
-  if (task) {
-    return res.status(200).json({
-      success: true,
-      task,
-    });
+  try {
+    // * we can use the findOne as well
+    const task = await Task.findById(id);
+    if (!task || (Object.keys(task).length && Object.keys(task).length < 1)) {
+      return res.status(404).json({ error: "Sorry we don't have any records for the item!" });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(500).json(error);
   }
-  res.status(404).json({
-    success: false,
-    msg: 'Inavlid id!',
-  });
+  // const task = tasks().find((item) => item._id === id);
+  // if (task) {
+  //   return res.status(200).json({
+  //     success: true,
+  //     task,
+  //   });
+  // }
+  // res.status(404).json({
+  //   success: false,
+  //   msg: 'Inavlid id!',
+  // });
   if (next) next();
 };
 
