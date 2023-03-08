@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const connectDB = require('./db/connect');
 const tasksRouter = require('./routes/tasks');
+const ErrorHandlerMiddlewere = require('./middlewere/ErrorHandlerMiddlewere');
 const app = express();
 const { PORT = 5000, MONGO_URI = '' } = process?.env || {};
 
@@ -33,5 +34,6 @@ app.use(express.json());
 app.use('/api/v1/tasks', tasksRouter);
 app.use(express.static('./public'));
 app.use(NotFound);
+app.use(ErrorHandlerMiddlewere);
 
 start();
