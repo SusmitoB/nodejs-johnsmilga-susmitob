@@ -8,7 +8,7 @@
 
 # Tutorial #120 Not found
 
-### if user is requesting some page or resource then we will throw error message using one middlewere
+### if user is requesting some page or resource which is invalid, we will throw error message using one middlewere
 
 #
 
