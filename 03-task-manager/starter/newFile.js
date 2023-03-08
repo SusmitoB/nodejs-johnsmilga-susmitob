@@ -1,5 +1,5 @@
 const sample = () => {
-  console.log('asdkhuaksdh');
+  console.log('Create hell!');
 };
 
 module.exports = { sample };
