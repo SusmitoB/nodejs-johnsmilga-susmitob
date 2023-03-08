@@ -1,4 +1,5 @@
 require('./db/connect'); // $ we don't to import and execute as while this line is executed the whole connect.js file itself will be executed
+const NotFound = require('./middlewere/NotFound');
 const express = require('express');
 require('dotenv').config();
 
@@ -31,5 +32,6 @@ app.use(express.json());
 
 app.use('/api/v1/tasks', tasksRouter);
 app.use(express.static('./public'));
+app.use(NotFound);
 
 start();
