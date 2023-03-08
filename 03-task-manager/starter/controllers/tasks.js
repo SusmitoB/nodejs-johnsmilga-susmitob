@@ -1,119 +1,53 @@
 const Task = require('../models/Task');
+const AsyncWrapper = require('../middlewere/AsyncWrapper');
 
-const allTasks = () => {
-  let data = [];
-  const tasks = () => data;
-  const setTasks = (value) => {
-    data = value;
-  };
-  return [tasks, setTasks];
-};
-const [tasks, setTasks] = allTasks();
+// const createTask = async (req, res, next) => {
+//   try {
+//     const task = await Task.create(req?.body);
+//     res.status(201).json(task);
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+//   if (next) next();
+// };
+const getAllTasks = AsyncWrapper(async (req, res) => {
+  const tasks = await Task.find({});
+  res.status(200).json({ tasks });
+});
 
-const getAllTasks = async (req, res, next) => {
-  // console.log({ tasks: tasks() });
-  try {
-    const tasks = await Task.find({});
-    res.status(200).json({ tasks });
-  } catch (error) {
-    res.status(500).json(error);
-  }
-  // res.status(200).json({
-  //   success: true,
-  //   tasks: tasks(),
-  // });
-  if (next) next();
-};
+const createTask = AsyncWrapper(async (req, res) => {
+  const task = await Task.create(req?.body);
+  res.status(201).json(task);
+});
 
-const createTask = async (req, res, next) => {
-  try {
-    const task = await Task.create(req?.body);
-    res.status(201).json(task);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-  // const { name } = req?.body;
-  // const date = new Date();
-  // const uuid = `${String(
-  //   Math.floor(Math.random() * 100000000)
-  // )}-${date.getDate()}${date.getDay()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}${date.getMilliseconds()}`;
-  // setTasks([...tasks(), { name, _id: uuid, completed: false }]);
-  // res.status(201).json({
-  //   success: true,
-  //   msg: 'Task is added successfully!',
-  // });
-  if (next) next();
-};
-
-const getTask = async (req, res, next) => {
+const getTask = AsyncWrapper(async (req, res) => {
   const { id } = req?.params;
-  try {
-    // * we can use the findOne as well
-    const task = await Task.findById(id);
-    if (!task || (Object.keys(task).length && Object.keys(task).length < 1)) {
-      return res.status(404).json({ error: "Sorry we don't have any records for the item!" });
-    }
-    res.status(200).json({ task });
-  } catch (error) {
-    res.status(500).json(error);
+  // * we can use the findOne as well
+  const task = await Task.findById(id);
+  if (!task || (Object.keys(task).length && Object.keys(task).length < 1)) {
+    return res.status(404).json({ error: `Sorry we don't have any records for the id ${id}!` });
   }
-  // const task = tasks().find((item) => item._id === id);
-  // if (task) {
-  //   return res.status(200).json({
-  //     success: true,
-  //     task,
-  //   });
-  // }
-  // res.status(404).json({
-  //   success: false,
-  //   msg: 'Inavlid id!',
-  // });
-  if (next) next();
-};
+  res.status(200).json({ task });
+});
 
-const updateTask = (req, res, next) => {
+const updateTask = AsyncWrapper(async (req, res) => {
   const { id } = req?.params;
   const { name, completed } = req?.body;
-  let task = {};
-  const newTasks = tasks().map((item) =>
-    item._id === id
-      ? (() => {
-          task = { ...item };
-          return { ...item, completed, name };
-        })()
-      : item
-  );
-  setTasks(newTasks);
-  if (task.name !== undefined && task.completed !== undefined) {
-    return res.status(200).json({
-      success: true,
-      task,
-    });
-  }
-  res.status(404).json({
-    success: false,
-    msg: 'Inavlid id!',
-  });
-  if (next) next();
-};
 
-const deleteTask = (req, res, next) => {
+  // * if we do not pass the { new: true }, we will recieve the previous data even after the successfull api call
+  const task = await Task.findOneAndUpdate({ _id: id }, { name, completed }, { new: true, runValidators: true });
+  if (!task) return res.status(404).json({ error: `Sorry we don't have any records for the id ${id}!` });
+  res.status(200).json({ task });
+});
+
+const deleteTask = AsyncWrapper(async (req, res) => {
   const { id } = req?.params;
-  const allTasks = tasks();
-  const indexOfTask = allTasks.findIndex((item) => item._id === id);
-  if (indexOfTask >= 0) {
-    allTasks.splice(indexOfTask, 1);
-    setTasks(allTasks);
-    return res.status(202).json({
-      success: true,
-      msg: 'The item has been removed!',
-    });
+
+  const task = await Task.findByIdAndDelete(id);
+  if (!task || (Object.keys(task).length && Object.keys(task).length < 1)) {
+    return res.status(404).json({ error: `Sorry we don't have any records for the id ${id}!` });
   }
-  res.status(404).json({
-    success: false,
-    msg: 'Inavlid id!',
-  });
-  if (next) next();
-};
+  res.status(200).json({ removedTask: task, success: true });
+});
 
 module.exports = { getAllTasks, createTask, getTask, updateTask, deleteTask };
