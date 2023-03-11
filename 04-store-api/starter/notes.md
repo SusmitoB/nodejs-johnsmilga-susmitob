@@ -1,6 +1,16 @@
 # 132 - Express Async Errors
 
-### Instead of using the ASYNC Wrapper that we ahd in the previous project here we are going to use some library "express-async-erros"
+### Instead of using the ASYNC Wrapper that we ahd in the previous project here we are going to use some library "express-async-errors"
+
+#
+
+#
+
+# 134 - Populate.js
+
+### the file is to be run without server being on to populate raw data
+
+### if the server is already running we can comment out "await connectDB(process.env.MONGO_URI);" and just run node populate to populate the raw data
 
 #
 

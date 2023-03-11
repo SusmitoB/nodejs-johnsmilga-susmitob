@@ -3,6 +3,8 @@ const connectDB = require('./db/connect');
 require('express-async-errors'); // $ this is replacement of the Async wrapper we had in teh previous project
 require('dotenv').config();
 const productsRouter = require('./routes/products');
+const notFoundMiddleware = require('./middleware/not-found');
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 const app = express();
 const { PORT = 5000, MONGO_URI = '' } = process?.env || {};
@@ -26,5 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/v1/products', productsRouter);
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 start();
