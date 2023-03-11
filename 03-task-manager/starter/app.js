@@ -1,4 +1,4 @@
-require('./db/connect'); // $ we don't to import and execute as while this line is executed the whole connect.js file itself will be executed
+// require('./db/connect'); // $ we don't to import and execute as while this line is executed the whole connect.js file itself will be executed
 const NotFound = require('./middlewere/NotFound');
 const express = require('express');
 require('dotenv').config();
@@ -27,12 +27,12 @@ const start = async () => {
     console.log(err);
   }
 };
+app.use(express.static('./public'));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use('/api/v1/tasks', tasksRouter);
-app.use(express.static('./public'));
 app.use(NotFound);
 app.use(ErrorHandlerMiddlewere);
 
