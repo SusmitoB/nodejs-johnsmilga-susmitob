@@ -15,3 +15,11 @@
 #
 
 #
+
+# 138 - Query object
+
+### so if we request with some prop that is not in the schema then as per the lesson mongo db sends empty array but as of the latest versions we will not recive empty array and mongo db will ignore the invalid props.
+
+#
+
+#

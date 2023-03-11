@@ -5,7 +5,10 @@ const getAllProducts = (req, res) => {
 };
 
 const getProductsByQuery = async (req, res) => {
-  const products = await ProductSchema.find(req?.query);
+  const { featured } = req?.query;
+  const queryObject = {};
+  if (featured) queryObject.featured = featured === 'true';
+  const products = await ProductSchema.find(queryObject);
   res.status(200).json({ products, nbOfHits: products.length });
 };
 
