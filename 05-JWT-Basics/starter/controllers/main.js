@@ -4,15 +4,17 @@
 // * setup authentication - if request has this token, let the user access the app
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { CustomAPIError } = require('../errors/custom-error');
+const { CustomAPIError } = require('../errors');
 
 const login = async (req, res) => {
-  console.log(req.body);
   if (!req.body?.username || !req.body?.password) {
     const status = 400;
     const message = 'It is a bad request! Please give both username and password to continue!';
     throw new CustomAPIError(message, status);
   }
+
+  // * we should not pass any password in the jwt token anybody who has this token can decode and see the payload so be cautious about that
+  // * here we are just passing an id
   const token = jwt.sign({ username: req.body.username, id: new Date().getDate() }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
@@ -20,8 +22,8 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-  console.log({ authorization: req.headers.authorization });
-  res.status(200).json({ msg: 'Hey Susmito! Here is your information as an authenticated user!' });
+  const { username, id } = req.user;
+  res.status(200).json({ msg: `Hey ${username}! Here is your id: ${id}!` });
 };
 
 module.exports = { login, dashboard };
